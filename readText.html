@@ -1,0 +1,331 @@
+  <meta charset="UTF-8">
+  <style type="text/css">
+  .tg  {border-collapse:collapse;border-spacing:0;border-color:#aabcfe;}
+  .tg td{font-family:Arial, sans-serif;font-size:13px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#aabcfe;background-color:#e8edff;}
+  .tg th{font-family:Arial, sans-serif;font-size:13px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#aabcfe;color:#FFFFFF  ;background-color:#2575BA;}
+  .tg .tg-baqh{text-align:center;}
+  .tg .tg-6k2t{background-color:#D2E4FC;}
+  .tg .tg-j0tj{background-color:#D2E4FC;text-align:center;}
+  .tg .tg-yw4l{}
+  .enjoy-css {
+    display: inline-block;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    cursor: pointer;
+    padding: 8px 5px;
+    border: 1px solid #018dc4;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    font: normal 18px/normal "PT Sans", "PT-Sans", sans-serif;
+    color: rgba(255,255,255,0.9);
+    -o-text-overflow: clip;
+    text-overflow: clip;
+    background: #2575BA;
+    -webkit-box-shadow: 2px 2px 2px 0 rgba(0,0,0,0.2) ;
+    box-shadow: 2px 2px 2px 0 rgba(0,0,0,0.2) ;
+    text-shadow: -1px -1px 0 rgba(15,73,168,0.66) ;
+    -webkit-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+    -moz-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+    -o-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+    transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+  }
+  .div-button{
+    float: left;
+  }
+  .div-legenda{
+    float: right;
+  }
+  .label1 em{
+    color: #D80E0E;
+  }
+  .label2 em{
+    color: #78AE40;
+  }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script>
+  //COMEÇA DO ZERO !!!!!!!!!!!!
+  var reader = new XMLHttpRequest() || new ActiveXObject('MSXML2.XMLHTTP');
+  var str;
+  var horariosString;
+  var horarios = [];
+  var numeroReunioes = 26;
+
+  function loadFile() { 
+      reader.open('get', 'https://api.github.com/repos/gproj123/agendamento/contents/file.txt?path=file.txt&ref=master', false);
+      reader.onreadystatechange = salvaString;
+      reader.send(null);
+  }
+
+  function salvaString(){
+        if(reader.readyState==4) {
+          var responseObj = JSON.parse(reader.responseText);
+          str = atob(responseObj.content);
+      }
+    }
+
+  function addMinutes(date, minutes) {
+      return new Date(date.getTime() + minutes*60000);
+  }
+
+  function parseStringToTime(horariosString){
+    var timeString = horariosString.split(":");
+    var time = new Date(2017, 6, 27, timeString[0], timeString[1], 0, 0);
+    return time;
+  }
+
+  function parseTimeToString(date){
+    var dateString;
+    if(date.getHours() < 10){
+      dateString = "0" + date.getHours() + ":";
+    }else{
+      dateString = date.getHours() + ":";
+    }
+    if(date.getMinutes() < 10){
+      dateString += "0" + date.getMinutes();
+    }else{
+      dateString += date.getMinutes();
+    }
+    return dateString;
+  }
+
+  function montaArray(){
+    loadFile();
+    str.replace(/[" "]/["/n"],"");
+    horariosString = str.split(";");
+    for(var i = 0;i<horariosString.length;i++){
+        horarios[i] = parseStringToTime(horariosString[i]);
+    }
+  }
+  //START!!!!
+  montaArray();
+
+  function pegaHora(indice){
+      if(indice<horarios.length){
+        document.write(parseTimeToString(horarios[indice]));
+              if(indice == horarios.length-1){
+                document.getElementById(indice).style.color = "#D80E0E";
+              }else{
+        document.getElementById(indice).style.color = "#78AE40";
+      }
+      }else{
+        var ultimaHora = horarios[horarios.length-1];
+        ultimaHora = addMinutes(ultimaHora,20*(indice+1-horarios.length));
+        document.write(parseTimeToString(ultimaHora));
+
+      }
+  }
+
+  function insereHoras(){
+    window.location.reload(false); 
+  }
+
+  </script>
+  <div class="div-button">
+  <input type="button" class="enjoy-css" onclick="insereHoras();" value="Atualizar" />
+  </div>
+  <div class="div-legenda">
+  <p class="label1"><em>Vermelho:</em> Reunião atual.</p>
+  <p class="label2"><em>Verde:</em> Reuniões finalizadas.<p>
+  </div>
+  <table class="tg" style="undefined;table-layout: fixed; width: 100%; color:#669;">
+  <colgroup>
+    <col style="width: 15%">
+    <col style="width: 40%">
+    <col style="width: 13%">
+    <col style="width: 29%">
+    <col style="width: 12%">
+  </colgroup>
+
+  <tr>
+    <th class="tg-baqh">Pilar</th>
+    <th class="tg-baqh">Projeto</th>
+    <th class="tg-baqh">Gerência</th>
+    <th class="tg-baqh">Gerente do<br>  Projeto</th>
+    <th class="tg-baqh">Hora<br>  Prevista</th>
+  </tr>
+
+  <tr id=0>
+    <td class="tg-6k2t">Rede/<br>    Comercial</td>
+    <td class="tg-6k2t">Disponibilização/reavaliaçãode<br>  Soluções/Serviços na rede de Autoatendimento</td>
+    <td class="tg-j0tj">GEATE</td>
+    <td class="tg-6k2t">Flavia Cristina<br>  Curto Cristianes Lacerda</td>
+    <td class="tg-j0tj"><script type="text/javascript">pegaHora(0);</script></td>
+  </tr>
+  <tr id=1>
+    <td class="tg-yw4l">Rede/<br>    Comercial</td>
+    <td class="tg-yw4l">Revisão do Modelo de Distribuição</td>
+    <td class="tg-baqh">GEATE</td>
+    <td class="tg-yw4l">Vitor Holetz Aguiar</td>
+    <td class="tg-baqh"><script type="text/javascript">pegaHora(1);</script></td>
+  </tr>
+  <tr id=2>
+    <td class="tg-6k2t">Rede/<br>    Comercial</td>
+    <td class="tg-6k2t">Estruturação do Modelo Comercial da Rede</td>
+    <td class="tg-j0tj">GEREH</td>
+    <td class="tg-6k2t">Aryon Soprani Rocha</td>
+    <td class="tg-j0tj"><script type="text/javascript">pegaHora(2);</script></td>
+  </tr>
+  <tr id=3>
+    <td class="tg-yw4l">Rede/<br>    Comercial</td>
+    <td class="tg-yw4l">Estruturação da Atuação Comercial Grandes Contas PJ</td>
+    <td class="tg-baqh"></td>
+    <td class="tg-yw4l"></td>
+    <td class="tg-baqh"><script type="text/javascript">pegaHora(3);</script></td>
+  </tr>
+  <tr id=4>
+    <td class="tg-6k2t">Rede/<br>    Comercial</td>
+    <td class="tg-6k2t">Evolução Canal Correspondente Bancário</td>
+    <td class="tg-j0tj">GECOR</td>
+    <td class="tg-6k2t">Raquel Azeredo de<br>  Oliveira</td>
+    <td class="tg-j0tj"><script type="text/javascript">pegaHora(4);</script></td>
+  </tr>
+  <tr id=5>
+    <td class="tg-yw4l">Meios<br>  de Pagamento</td>
+    <td class="tg-yw4l">Parcelamento de fatura – Cartões Banestes (1ª e 2ª fase)</td>
+    <td class="tg-baqh">GEINC</td>
+    <td class="tg-yw4l">Franciano<br>  Fiorese</td>
+    <td class="tg-baqh"><script type="text/javascript">pegaHora(5);</script></td>
+  </tr>
+  <tr id=6>
+    <td class="tg-6k2t">Meios<br>  de Pagamento</td>
+    <td class="tg-6k2t">Cartão Virtual Banescard</td>
+    <td class="tg-j0tj">GEINC</td>
+    <td class="tg-6k2t">Marcel<br>  Damasio Moreira</td>
+    <td class="tg-j0tj"><script type="text/javascript">pegaHora(6);</script></td>
+  </tr>
+  <tr id=7>
+    <td class="tg-yw4l">Meios<br>  de Pagamento</td>
+    <td class="tg-yw4l">Liquidação Banescard em Grade Única</td>
+    <td class="tg-baqh">GEINC</td>
+    <td class="tg-yw4l">Marcel<br>  Damasio Moreira</td>
+    <td class="tg-baqh"><script type="text/javascript">pegaHora(7);</script></td>
+  </tr>
+  <tr id=8>
+    <td class="tg-6k2t">Meios<br>  de Pagamento</td>
+    <td class="tg-6k2t">Banestes Visa Platinum</td>
+    <td class="tg-j0tj">GEINC</td>
+    <td class="tg-6k2t">Lais Fraga Muniz</td>
+    <td class="tg-j0tj"><script type="text/javascript">pegaHora(8);</script></td>
+  </tr>
+  <tr id=9>
+    <td class="tg-yw4l">Meios<br>  de Pagamento</td>
+    <td class="tg-yw4l">Aplicativo Banestes de Meios de Pagamento</td>
+    <td class="tg-baqh">GEINC</td>
+    <td class="tg-yw4l">Marcel<br>  Damasio Moreira</td>
+    <td class="tg-baqh"><script type="text/javascript">pegaHora(9);</script></td>
+  </tr>
+  <tr id=10>
+    <td class="tg-6k2t">Banco<br>  Digital</td>
+    <td class="tg-6k2t">Aplicativo Banestes e Internet Banking - Simplifica Banestes </td>
+    <td class="tg-j0tj">GESIN</td>
+    <td class="tg-6k2t">Maria<br>  Lúcia Xavier</td>
+    <td class="tg-j0tj"><script type="text/javascript">pegaHora(10);</script></td>
+  </tr>
+  <tr id=11>
+    <td class="tg-yw4l">Banco<br>  Digital </td>
+    <td class="tg-yw4l">Nova Solução de Prevenção a Fraudes</td>
+    <td class="tg-baqh">GESIN</td>
+    <td class="tg-yw4l">Gabriel<br>  Fassarella Wyatt</td>
+    <td class="tg-baqh"><script type="text/javascript">pegaHora(11);</script></td>
+  </tr>
+  <tr id=12>
+    <td class="tg-6k2t">Banco<br>  Digital </td>
+    <td class="tg-6k2t">Desenvolvimento de modelos de escoragem de clientes</td>
+    <td class="tg-j0tj">GEPOC</td>
+    <td class="tg-6k2t">Vinicius<br>  Silva Martins Ferreira</td>
+    <td class="tg-j0tj"><script type="text/javascript">pegaHora(12);</script></td>
+  </tr>
+  <tr id=13>
+    <td class="tg-yw4l">Banco<br>  Digital </td>
+    <td class="tg-yw4l">Novo Sistema de Cadastro</td>
+    <td class="tg-baqh">GECAD</td>
+    <td class="tg-yw4l">George<br>  de Oliveira Arruda</td>
+    <td class="tg-baqh"><script type="text/javascript">pegaHora(13);</script></td>
+  </tr>
+  <tr id=14>
+    <td class="tg-6k2t">Banco<br>  Digital </td>
+    <td class="tg-6k2t">Abertura de Contas Corrente e Poupança por meio digital</td>
+    <td class="tg-j0tj">GECOD</td>
+    <td class="tg-6k2t">Michelly<br>  de Souza Passos Sisquini</td>
+    <td class="tg-j0tj"><script type="text/javascript">pegaHora(14);</script></td>
+  </tr>
+  <tr id=15>
+    <td class="tg-yw4l">Banco<br>  Digital </td>
+    <td class="tg-yw4l">Aplicativo Banestes - Fase 2</td>
+    <td class="tg-baqh">GECEL</td>
+    <td class="tg-yw4l">Gustavo<br>  Andrade Leandro</td>
+    <td class="tg-baqh"><script type="text/javascript">pegaHora(15);</script></td>
+  </tr>
+  <tr id=16>
+    <td class="tg-6k2t">Projetos<br>  Paralelos</td>
+    <td class="tg-6k2t">e-Segurado Banestes</td>
+    <td class="tg-j0tj">GECOM</td>
+    <td class="tg-6k2t">Debora<br>  Campanha Furtado de Araujo Costa</td>
+    <td class="tg-j0tj"><script type="text/javascript">pegaHora(16);</script></td>
+  </tr>
+  <tr id=17>
+    <td class="tg-yw4l">Projetos<br>  Paralelos</td>
+    <td class="tg-yw4l">Novo Sistema para Gestão de Demandas Judiciais</td>
+    <td class="tg-baqh">SUJUD</td>
+    <td class="tg-yw4l">Peterson<br>  Pereira Coelho Junior</td>
+    <td class="tg-baqh"><script type="text/javascript">pegaHora(17);</script></td>
+  </tr>
+  <tr id=18>
+    <td class="tg-6k2t">Projetos<br>  Paralelos</td>
+    <td class="tg-6k2t">Substituição do Sistema de Automação Bancária - Transaction<br>  Manager (Fase COB)</td>
+    <td class="tg-j0tj">GESIS</td>
+    <td class="tg-6k2t">Rodrigo<br>  Ruy Boguski</td>
+    <td class="tg-j0tj"><script type="text/javascript">pegaHora(18);</script></td>
+  </tr>
+  <tr id=19>
+    <td class="tg-yw4l">Projetos<br>  Paralelos</td>
+    <td class="tg-yw4l">Levantamento, contratação e implantação de solução ERP - Back<br>  Office</td>
+    <td class="tg-baqh">GESIS</td>
+    <td class="tg-yw4l">Maria<br>  Luiza G de Souza Passos</td>
+    <td class="tg-baqh"><script type="text/javascript">pegaHora(19);</script></td>
+  </tr>
+  <tr id=20>
+    <td class="tg-6k2t">Projetos<br>  Paralelos</td>
+    <td class="tg-6k2t">Criação da Base de Conhecimento das Rotinas Batch da Operação</td>
+    <td class="tg-j0tj">GEINF</td>
+    <td class="tg-6k2t">Dijalma<br>  de Assis Brito</td>
+    <td class="tg-j0tj"><script type="text/javascript">pegaHora(20);</script></td>
+  </tr>
+  <tr id=21>
+    <td class="tg-yw4l">Projetos<br>  Paralelos</td>
+    <td class="tg-yw4l">Recuperação de Créditos Previdênciários</td>
+    <td class="tg-baqh">GETRI</td>
+    <td class="tg-yw4l">Devacir<br>  Delfior</td>
+    <td class="tg-baqh"><script type="text/javascript">pegaHora(21);</script></td>
+  </tr>
+  <tr id=22>
+    <td class="tg-6k2t">Produtos/<br>    Serviços </td>
+    <td class="tg-6k2t">Gerenciador Financeiro WEB/Novo Office Banking</td>
+    <td class="tg-j0tj">GECEL</td>
+    <td class="tg-6k2t">Pablo<br>  de Oliveira Silvano</td>
+    <td class="tg-j0tj"><script type="text/javascript">pegaHora(22);</script></td>
+  </tr>
+  <tr id=23>
+    <td class="tg-yw4l">Produtos/<br>    Serviços </td>
+    <td class="tg-yw4l">Modernização da Plataforma de Crédito Consignado</td>
+    <td class="tg-baqh">GCONS</td>
+    <td class="tg-yw4l">Ronald<br>  Martins de Freitas</td>
+    <td class="tg-baqh"><script type="text/javascript">pegaHora(23);</script></td>
+  </tr>
+  <tr id=24>
+    <td class="tg-6k2t">Produtos/<br>    Serviços </td>
+    <td class="tg-6k2t">Extração, segmentação e tratamento da Base de Clientes</td>
+    <td class="tg-j0tj">SUPRO</td>
+    <td class="tg-6k2t">Marco<br>  Antonio Tavares Loureiro</td>
+    <td class="tg-j0tj"><script type="text/javascript">pegaHora(24);</script></td>
+  </tr>
+  <tr id=25>
+    <td class="tg-yw4l">Produtos/<br>    Serviços </td>
+    <td class="tg-yw4l">Antecipação de Recebíveis de Cartões</td>
+    <td class="tg-baqh">GCREJ</td>
+    <td class="tg-yw4l">Roberta<br>  Nunes de Souza Oliveira</td>
+    <td class="tg-baqh"><script type="text/javascript">pegaHora(25);</script></td>
+  </tr>
+  </table>

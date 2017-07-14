@@ -95,20 +95,27 @@
     }
     return dateString;
   }
+    
   //2 - FUNÇÃO QUE PEGA A STRING E A DIVIDE EM VARIAS STRINGS COM OS HORÁRIOS DE CADA REUNIÃO.
   function montaArray(){
     //3 - FUNÇAO QUE LÊ O ARQUIVO E SALVA A STRING COM OS HORÁRIOS NA VARIAVEL GLOBAL str.
     loadFile();
+    //10 - tira os espaços e enters da string e substitui por nada.
     str.replace(/[" "]/["/n"],"");
+    //11 - quebra a sting em um vetor de strings, baseado no ";".
     horariosString = str.split(";");
+    //12 - loop que converte de string para o formato Hora.
     for(var i = 0;i<horariosString.length;i++){
+        //13 - chama função que que converte string para hora.
         horarios[i] = parseStringToTime(horariosString[i]);
     }
   }
   //1-FUNÇÃO CHAMADA QUANDO A PÁGINA É ABERTA, INICIA O SCRIPT.
   montaArray();
-
+    
+  //14 - funçao que é chamada dentro do html para ver a hora de uma reunião.
   function pegaHora(indice){
+      //15 - se o indice da tabela 
       if(indice<horarios.length){
         document.write(parseTimeToString(horarios[indice]));
               if(indice == horarios.length-1){

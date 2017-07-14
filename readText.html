@@ -51,16 +51,22 @@
   var horariosString;
   var horarios = [];
   var numeroReunioes = 26;
-
+    
+  //4 - FUNÇÃO DE LEITURA DO ARQUIVO
   function loadFile() { 
       reader.open('get', 'https://api.github.com/repos/gproj123/agendamento/contents/file.txt?path=file.txt&ref=master', false);
+    //5 - DEFINE QUE FUNÇAO QUE DEVE SER CHAMADA QUANDO A LEITURA DO ARQUIVO FOR CONCLUIDA.
       reader.onreadystatechange = salvaString;
+    //6 - CHAMA O MÉTODO COM O PEDIDO PARA LEITURA.
       reader.send(null);
   }
 
   function salvaString(){
+    //7 - SE A LEITURA FOI OK
         if(reader.readyState==4) {
+          //8 - RECEBE A RESPOSTA NO FORMATO JSON
           var responseObj = JSON.parse(reader.responseText);
+          //9 - PEGA O STR DO CAMPO CONTENT DO JSON, DECRIPTA E SALVA COMO STRING NA VARIAVEL str.
           str = atob(responseObj.content);
       }
     }
@@ -89,8 +95,9 @@
     }
     return dateString;
   }
-
+  //2 - FUNÇÃO QUE PEGA A STRING E A DIVIDE EM VARIAS STRINGS COM OS HORÁRIOS DE CADA REUNIÃO.
   function montaArray(){
+    //3 - FUNÇAO QUE LÊ O ARQUIVO E SALVA A STRING COM OS HORÁRIOS NA VARIAVEL GLOBAL str.
     loadFile();
     str.replace(/[" "]/["/n"],"");
     horariosString = str.split(";");
@@ -98,7 +105,7 @@
         horarios[i] = parseStringToTime(horariosString[i]);
     }
   }
-  //START!!!!
+  //1-FUNÇÃO CHAMADA QUANDO A PÁGINA É ABERTA, INICIA O SCRIPT.
   montaArray();
 
   function pegaHora(indice){
